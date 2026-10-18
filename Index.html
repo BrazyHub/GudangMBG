@@ -4,90 +4,178 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#241021">
-  <meta name="description" content="BRAZYHUB - Sistem Komposisi Zat Gizi Makanan">
-  <title>BRAZYHUB - Sistem Komposisi Zat Gizi Makanan</title>
+  <meta name="description" content="BRAZYHUB - Sistem Gudang">
+  <title>BRAZYHUB | Sistem Gudang</title>
   <style>
+    :root {
+      color-scheme: dark;
+      --bg: #1b0d18;
+      --panel: #2b1727;
+      --pink: #ec4899;
+      --pink-light: #f9a8d4;
+      --text: #fff7fb;
+      --muted: #e8c9da;
+    }
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
-      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      -webkit-text-size-adjust: 100%;
+    }
+    body { overflow: hidden; }
+    #appFrame {
+      position: fixed;
+      inset: 0;
       width: 100%;
       height: 100%;
-      overflow: hidden;
-      background: #241021;
-      -webkit-text-size-adjust: 100%;
+      height: 100dvh;
+      border: 0;
+      display: block;
+      background: #fff5f8;
+      z-index: 1;
     }
     #loader {
       position: fixed;
       inset: 0;
+      z-index: 5;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 14px;
-      background: #241021;
-      color: #fce7f3;
-      font-family: Arial, sans-serif;
-      z-index: 2;
-      transition: opacity .3s ease;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(236,72,153,.22), transparent 35%),
+        radial-gradient(circle at 85% 85%, rgba(124,58,237,.13), transparent 35%),
+        var(--bg);
+      transition: opacity .28s ease, visibility .28s ease;
     }
-    #loader.hide { opacity: 0; pointer-events: none; }
+    #loader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-card {
+      width: min(100%, 390px);
+      padding: 32px 26px;
+      text-align: center;
+      border: 1px solid rgba(249,168,212,.2);
+      border-radius: 24px;
+      background: rgba(43,23,39,.88);
+      box-shadow: 0 24px 70px rgba(0,0,0,.25);
+    }
+    .logo {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 14px;
+      border-radius: 19px;
+      background: linear-gradient(135deg, #f472b6, #be185d);
+      box-shadow: 0 10px 28px rgba(236,72,153,.25);
+      font-size: 30px;
+    }
+    .brand { margin: 0; color: var(--pink-light); font-size: 22px; font-weight: 850; letter-spacing: 1.4px; }
+    .subtitle { margin: 7px 0 22px; color: var(--muted); font-size: 13px; line-height: 1.6; }
     .spinner {
-      width: 36px;
-      height: 36px;
-      border: 4px solid rgba(249, 168, 212, .25);
-      border-top-color: #ec4899;
+      width: 34px; height: 34px; margin: 0 auto 14px;
+      border: 3px solid rgba(249,168,212,.2);
+      border-top-color: var(--pink);
       border-radius: 50%;
       animation: spin .8s linear infinite;
     }
-    .brand {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: #f9a8d4;
+    .loading-text { color: #fbcfe8; font-size: 13px; }
+    .help { display: none; margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .help.show { display: block; }
+    .actions { display: flex; gap: 9px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+    .actions a, .actions button {
+      min-height: 42px; padding: 11px 15px; border-radius: 11px;
+      font: inherit; font-size: 12px; font-weight: 750; text-decoration: none; cursor: pointer;
     }
-    .loading-text { font-size: 14px; color: #fbcfe8; }
+    .primary { border: 0; background: linear-gradient(105deg,#f472b6,#db2777); color: #fff; }
+    .secondary { border: 1px solid rgba(249,168,212,.25); background: transparent; color: var(--pink-light); }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    #appFrame {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      border: 0;
-      display: block;
-      background: #241021;
-      z-index: 1;
+    @media (max-width: 480px) {
+      .loader-card { padding: 27px 20px; }
+      .brand { font-size: 20px; }
+      .actions { flex-direction: column; }
+      .actions a, .actions button { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
 <body>
-  <div id="loader" role="status" aria-live="polite">
-    <div class="spinner" aria-hidden="true"></div>
-    <div class="brand">BRAZYHUB</div>
-    <div class="loading-text">Memuat aplikasi...</div>
-  </div>
-
-  <!-- URL Web App BRAZYHUB (bukan URL Server Lisensi) -->
   <iframe
     id="appFrame"
     src="https://script.google.com/macros/s/AKfycbzWZ1Nz-ejwm7eqmELm2-n4iS4jFuvkvqvZho_o8HICiKSn6CzMJ5Q4tdTXM3OplRcG/exec"
-    title="BRAZYHUB - Sistem Komposisi Zat Gizi Makanan"
-    allow="clipboard-write"
-  ></iframe>
+    title="BRAZYHUB - Sistem Gudang"
+    allow="clipboard-read; clipboard-write"
+    referrerpolicy="strict-origin-when-cross-origin">
+  </iframe>
+
+  <div id="loader" role="status" aria-live="polite">
+    <div class="loader-card">
+      <div class="logo" aria-hidden="true">📦</div>
+      <h1 class="brand">BRAZYHUB</h1>
+      <p class="subtitle">Sistem Gudang<br>Memuat aplikasi, mohon tunggu sebentar.</p>
+      <div class="spinner" id="spinner" aria-hidden="true"></div>
+      <div class="loading-text" id="loadingText">Menghubungkan ke aplikasi...</div>
+      <div class="help" id="helpText">
+        Aplikasi belum tampil? Periksa koneksi internet atau buka aplikasi langsung.
+        Jika halaman Google menampilkan pesan lisensi, periksa konfigurasi lisensi di aplikasi.
+      </div>
+      <div class="actions" id="actions" hidden>
+        <a class="primary" href="https://script.google.com/macros/s/AKfycbzWZ1Nz-ejwm7eqmELm2-n4iS4jFuvkvqvZho_o8HICiKSn6CzMJ5Q4tdTXM3OplRcG/exec" target="_blank" rel="noopener noreferrer">Buka Aplikasi Langsung</a>
+        <button class="secondary" type="button" id="retryButton">Coba Muat Ulang</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     (function () {
+      'use strict';
       var loader = document.getElementById('loader');
       var frame = document.getElementById('appFrame');
+      var spinner = document.getElementById('spinner');
+      var loadingText = document.getElementById('loadingText');
+      var helpText = document.getElementById('helpText');
+      var actions = document.getElementById('actions');
+      var retryButton = document.getElementById('retryButton');
+      var timeoutId;
+
       function hideLoader() {
         loader.classList.add('hide');
-        setTimeout(function () { loader.style.display = 'none'; }, 350);
+        window.setTimeout(function () {
+          loader.style.display = 'none';
+        }, 320);
+        if (timeoutId) window.clearTimeout(timeoutId);
       }
+
+      function showHelp() {
+        spinner.style.display = 'none';
+        loadingText.textContent = 'Aplikasi belum selesai dimuat.';
+        helpText.classList.add('show');
+        actions.hidden = false;
+      }
+
+      function startTimeout() {
+        if (timeoutId) window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(showHelp, 12000);
+      }
+
       frame.addEventListener('load', hideLoader);
-      setTimeout(hideLoader, 8000); // jaga-jaga jika event load tidak terpanggil
+      retryButton.addEventListener('click', function () {
+        loader.style.display = 'flex';
+        loader.classList.remove('hide');
+        spinner.style.display = 'block';
+        loadingText.textContent = 'Menghubungkan kembali...';
+        helpText.classList.remove('show');
+        actions.hidden = true;
+        frame.src = frame.src;
+        startTimeout();
+      });
+
+      startTimeout();
     })();
   </script>
 </body>
